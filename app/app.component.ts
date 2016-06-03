@@ -1,33 +1,41 @@
-import {Component} from '@angular/core';
-import {AlertComponent, DATEPICKER_DIRECTIVES} from 'ng2-bootstrap/ng2-bootstrap';
+import { Component } from '@angular/core';
+import { RouteConfig, ROUTER_DIRECTIVES, ROUTER_PROVIDERS } from '@angular/router-deprecated';
+
+import { DashboardComponent }  from './dashboard.component';
+import { HeroesComponent }     from './heroes.component';
+import { HeroDetailComponent } from './hero-detail.component';
+import { HeroService }         from './hero.service';
 
 @Component({
   selector: 'my-app',
-  directives: [AlertComponent, DATEPICKER_DIRECTIVES],
-  template: `
-    <alert type="info">ng2-bootstrap hello world!</alert>
-      <pre>Selected date is: <em *ngIf="dt">{{ getDate() | date:'fullDate'}}</em></pre>
-      <h4>Inline</h4>
-      <div style="display:inline-block; min-height:290px;">
-        <datepicker [(ngModel)]="dt" [minDate]="minDate" [showWeeks]="true"></datepicker>
-      </div>
-  `,
-})
-export class AppComponent {
-  public dt:Date = new Date();
-  private minDate:Date = null;
-  private events:Array<any>;
-  private tomorrow:Date;
-  private afterTomorrow:Date;
-  private formats:Array<string> = ['DD-MM-YYYY', 'YYYY/MM/DD', 'DD.MM.YYYY', 'shortDate'];
-  private format = this.formats[0];
-  private dateOptions:any = {
-    formatYear: 'YY',
-    startingDay: 1
-  };
-  private opened:boolean = false;
 
-  public getDate():number {
-    return this.dt && this.dt.getTime() || new Date().getTime();
-  }
+  template: `
+    <h1>{{title}}</h1>
+    <nav>
+      <a [routerLink]="['Dashboard']">Dashboard</a>
+      <a [routerLink]="['Heroes']">Heroes</a>
+    </nav>
+    <router-outlet></router-outlet>
+  `,
+  styleUrls: ['app/app.component.css'],
+  directives: [ROUTER_DIRECTIVES],
+  providers: [
+    ROUTER_PROVIDERS,
+    HeroService,
+  ]
+})
+@RouteConfig([
+  { path: '/dashboard',  name: 'Dashboard',  component: DashboardComponent, useAsDefault: true },
+  { path: '/detail/:id', name: 'HeroDetail', component: HeroDetailComponent },
+  { path: '/heroes',     name: 'Heroes',     component: HeroesComponent }
+])
+export class AppComponent {
+  title = 'Tour of Heroes';
 }
+
+
+/*
+Copyright 2016 Google Inc. All Rights Reserved.
+Use of this source code is governed by an MIT-style license that
+can be found in the LICENSE file at http://angular.io/license
+*/
